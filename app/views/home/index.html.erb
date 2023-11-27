@@ -5,8 +5,8 @@
   <div id="app">
     <form @submit.prevent="searchGuesthouses">
       <label for="search">Busca de Pousadas</label>
-      <input name="search" v-model="searchQuery" type="text" placeholder="Nome da Pousada">
-      <button type="submit">Search</button>
+      <input id="search" v-model="searchQuery" type="text" placeholder="Nome da Pousada">
+      <button type="submit">Buscar</button>
     </form>
     <dl v-for="guesthouse in guesthouses">
       <dt><h4><a :href="'guesthouses/' + guesthouse.id">{{ guesthouse.brand_name }}</a></h4></dt>

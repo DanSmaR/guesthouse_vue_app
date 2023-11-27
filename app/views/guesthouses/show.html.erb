@@ -37,9 +37,10 @@
 
   <section>
     <h4>Detalhes dos Quartos</h4>
-      <dl v-for="room in rooms">
+    <div v-for="room in rooms">
+      <dl>
         <dt><strong>Nome</strong></dt>
-        <dd><strong>{{ room.name }}</strong></dd>
+        <dd>{{ room.name }}</dd>
 
         <dt><strong>Descrição</strong></dt>
         <dd>{{ room.description }}</dd>
@@ -81,6 +82,10 @@
         <dd v-if="room.accessible">Possui</dd>
         <dd v-else>Não possui</dd>
       </dl>
+      <p>
+        <a :href=`/rooms/${room.id}/availability`>Disponibilidade</a>
+      </p>
+    </div>
   </section>
 </article>
 

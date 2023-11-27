@@ -8,4 +8,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
   resources :guesthouses, only: :show
+  resources :rooms, only: [] do
+    get :availability, on: :member
+  end
 end

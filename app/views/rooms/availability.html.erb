@@ -1,0 +1,64 @@
+<article id="availability">
+  <h3>Verificar Disponibilidade do Quarto</h3>
+  <form @submit.prevent="checkAvailability">
+    <p>
+      <label for="checkInDate">Data de Check-in</label>
+      <input id="checkInDate" v-model="checkInDate" type="date">
+    </p>
+    <p>
+      <label for="checkOutDate">Data de Check-out</label>
+      <input id="checkOutDate" v-model="checkOutDate" type="date">
+    </p>
+    <p>
+      <label for="numberOfGuests">Quantidade de Hóspedes</label>
+      <input id="numberOfGuests" v-model="numberOfGuests" type="number" min="1">
+    </p>
+    <button type="submit">Verificar Disponibilidade</button>
+  </form>
+
+  <section>
+    <h4>Resultados</h4>
+      <dl>
+        <dt v-if="result.message != null"><strong>Mensagem</strong></dt>
+        <dd>{{ result.message }}</dd>
+        <dt v-if="result.available"><strong>Preço Total:</strong></dt>
+        <dd v-if="result.available">{{ formatCurrency(result.total_price) }}</dd>
+      </dl>
+      <ul v-if="errors.length !== 0" style="color: red">
+        <li v-for="error in errors">{{ error }}</li>
+      </ul>
+  </section>
+</article>
+
+<script>
+  const { createApp } = Vue
+  const roomId = <%= @id %>
+
+  createApp({
+    data() {
+      return {
+        checkInDate: '',
+        checkOutDate: '',
+        numberOfGuests: 1,
+        result: {},
+        errors: []
+      }
+    },
+    methods: {
+      checkAvailability() {
+        this.errors = [];
+        fetch(`http://localhost:4000/api/v1/rooms/${roomId}/availability?check_in_date=${this.checkInDate}&check_out_date=${this.checkOutDate}&number_of_guests=${this.numberOfGuests}`)
+          .then(response => response.json())
+          .then(data => {
+            this.result = data;
+            if (this.result.errors) {
+              this.errors = this.result.errors;
+            }
+          });
+      },
+      formatCurrency(value) {
+          return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+      }
+    }
+  }).mount('#availability')
+</script>
