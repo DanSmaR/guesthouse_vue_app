@@ -1,35 +1,94 @@
 <article id="guesthouse-details">
   <h3>Detalhes da {{ guesthouse.brand_name }}</h3>
-  <dl>
-    <dt>Descrição</dt>
-    <dd>{{ guesthouse.description }}</dd>
-    <dt>Endereço</dt>
-    <dd>
-      {{ address.street }},
-      {{ address.neighborhood }} -
-      {{ address.city }}/{{ address.state }} -
-      CEP: {{ address.postal_code }}
-    </dd>
-    <dt>Telefone</dt>
-    <dd>{{ guesthouse.phone_number }}</dd>
-    <dt>Email</dt>
-    <dd>{{ guesthouse.email }}</dd>
-    <dt>Aceita Pets</dt>
-    <dd v-if="guesthouse.pets">Aceita</dd>
-    <dd v-else>Não aceita</dd>
-    <dt>Política de Uso</dt>
-    <dd>{{ guesthouse.use_policy }}</dd>
-    <dt>Hora de Checkin</dt>
-    <dd>{{ guesthouse.checkin_hour }}</dd>
-    <dt>Hora de Checkout</dt>
-    <dd>{{ guesthouse.checkout_hour }}</dd>
-    <dt>Formas de Pagamento</dt>
-    <dd v-for="payment_method in payment_methods">
-      {{ payment_method.method }}
-    </dd>
-    <dt v-if="guesthouse.average_rating">Avaliação</dt>
-    <dd v-if="guesthouse.average_rating">{{ guesthouse.average_rating }}</dd>
-  </dl>
+  <section aria-label="Detalhes da Pousada">
+    <dl>
+      <dt><strong>Descrição</strong></dt>
+      <dd>{{ guesthouse.description }}</dd>
+      <dt><strong>Endereço</strong></dt>
+      <dd>
+        {{ address.street }},
+        {{ address.neighborhood }} -
+        {{ address.city }}/{{ address.state }} -
+        CEP: {{ address.postal_code }}
+      </dd>
+      <dt><strong>Telefone</strong></dt>
+      <dd>{{ guesthouse.phone_number }}</dd>
+      <dt><strong>Email</strong></dt>
+      <dd>{{ guesthouse.email }}</dd>
+      <dt><strong>Aceita Pets</strong></dt>
+      <dd v-if="guesthouse.pets">Aceita</dd>
+      <dd v-else>Não aceita</dd>
+      <dt><strong>Política de Uso</strong></dt>
+      <dd>{{ guesthouse.use_policy }}</dd>
+      <dt><strong>Hora de Check-in</strong></dt>
+      <dd>{{ guesthouse.checkin_hour }}</dd>
+      <dt><strong>Hora de Check-out</strong></dt>
+      <dd>{{ guesthouse.checkout_hour }}</dd>
+      <dt><strong>Formas de Pagamento</strong></dt>
+      <dd v-for="paymentMethod in paymentMethods">
+        {{ translations[paymentMethod.method] }}
+      </dd>
+      <dt v-if="guesthouse.average_rating">Avaliação</dt>
+      <dd v-if="guesthouse.average_rating">{{ guesthouse.average_rating }}</dd>
+    </dl>
+  </section>
+
+  <hr>
+
+  <section>
+    <h4>Detalhes dos Quartos</h4>
+
+        <dl v-for="room in rooms">
+          <dt><strong>Nome</strong></dt>
+          <dd>{{ room.name }}</dd>
+
+          <dt><strong>Descrição</strong></dt>
+          <dd>{{ room.description }}</dd>
+
+          <dt><strong>Valor da Diária</strong></dt>
+          <dd>{{ formatCurrency(room.daily_rate) }}</dd>
+
+          <dt><strong>Tamanho</strong></dt>
+          <dd>{{ room.size }}</dd>
+
+          <dt><strong>Quantidade de Pessoas</strong></dt>
+          <dd>{{ room.max_people }}</dd>
+
+          <dt><strong>Banheiro</strong></dt>
+          <dd v-if="room.bathroom">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>Ar Condicionado</strong></dt>
+          <dd v-if="room.air_conditioning">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>TV</strong></dt>
+          <dd v-if="room.tv">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>Varanda</strong></dt>
+          <dd v-if="room.balcony">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>Guarda-Roupa</strong></dt>
+          <dd v-if="room.wardrobe">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>Cofre</strong></dt>
+          <dd v-if="room.safe">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <dt><strong>Accessibilidade para PCD's</strong></dt>
+          <dd v-if="room.accessible">Possui</dd>
+          <dd v-else>Não possui</dd>
+
+          <p>
+            <a :href="`/rooms/${room.id}`">Detalhes</a>
+          </p>
+
+          <hr>
+        </dl>
+  </section>
 </article>
 
 <script>
@@ -40,16 +99,33 @@
             return {
                 guesthouse: {},
                 address: {},
-                payment_methods: []
+                paymentMethods: [],
+                rooms: [],
+                translations: {
+                    'credit_card': 'Cartão de Crédito',
+                    'debit_card': 'Cartão de Débito',
+                    'pix': 'Pix'
+                }
+            }
+        },
+        methods: {
+            formatCurrency(value) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
             }
         },
         mounted() {
-            fetch('http://localhost:4000/api/v1/guesthouses/' + <%= @id %>)
-                .then(response => response.json())
-                .then(data => {
-                    this.guesthouse = data
-                    this.address = data.address
-                    this.payment_methods = data.payment_methods
+            const id = <%= @id %>;
+            Promise.all([
+                fetch(`http://localhost:4000/api/v1/guesthouses/${id}`),
+                fetch(`http://localhost:4000/api/v1/guesthouses/${id}/rooms`)
+            ])
+                .then(responses => Promise.all(responses.map(response => response.json())))
+                .then(([guesthouseData, roomsData]) => {
+                    this.guesthouse = guesthouseData;
+                    this.address = guesthouseData.address;
+                    this.paymentMethods = guesthouseData.payment_methods;
+                    this.rooms = roomsData;
+                    console.log(this.rooms)
                 });
         }
     }).mount('#guesthouse-details')
