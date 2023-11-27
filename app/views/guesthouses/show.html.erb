@@ -37,57 +37,50 @@
 
   <section>
     <h4>Detalhes dos Quartos</h4>
+      <dl v-for="room in rooms">
+        <dt><strong>Nome</strong></dt>
+        <dd><strong>{{ room.name }}</strong></dd>
 
-        <dl v-for="room in rooms">
-          <dt><strong>Nome</strong></dt>
-          <dd>{{ room.name }}</dd>
+        <dt><strong>Descrição</strong></dt>
+        <dd>{{ room.description }}</dd>
 
-          <dt><strong>Descrição</strong></dt>
-          <dd>{{ room.description }}</dd>
+        <dt><strong>Valor da Diária</strong></dt>
+        <dd>{{ formatCurrency(room.daily_rate) }}</dd>
 
-          <dt><strong>Valor da Diária</strong></dt>
-          <dd>{{ formatCurrency(room.daily_rate) }}</dd>
+        <dt><strong>Tamanho</strong></dt>
+        <dd>{{ room.size }}</dd>
 
-          <dt><strong>Tamanho</strong></dt>
-          <dd>{{ room.size }}</dd>
+        <dt><strong>Quantidade de Pessoas</strong></dt>
+        <dd>{{ room.max_people }}</dd>
 
-          <dt><strong>Quantidade de Pessoas</strong></dt>
-          <dd>{{ room.max_people }}</dd>
+        <dt><strong>Banheiro</strong></dt>
+        <dd v-if="room.bathroom">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>Banheiro</strong></dt>
-          <dd v-if="room.bathroom">Possui</dd>
-          <dd v-else>Não possui</dd>
+        <dt><strong>Ar Condicionado</strong></dt>
+        <dd v-if="room.air_conditioning">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>Ar Condicionado</strong></dt>
-          <dd v-if="room.air_conditioning">Possui</dd>
-          <dd v-else>Não possui</dd>
+        <dt><strong>TV</strong></dt>
+        <dd v-if="room.tv">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>TV</strong></dt>
-          <dd v-if="room.tv">Possui</dd>
-          <dd v-else>Não possui</dd>
+        <dt><strong>Varanda</strong></dt>
+        <dd v-if="room.balcony">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>Varanda</strong></dt>
-          <dd v-if="room.balcony">Possui</dd>
-          <dd v-else>Não possui</dd>
+        <dt><strong>Guarda-Roupa</strong></dt>
+        <dd v-if="room.wardrobe">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>Guarda-Roupa</strong></dt>
-          <dd v-if="room.wardrobe">Possui</dd>
-          <dd v-else>Não possui</dd>
+        <dt><strong>Cofre</strong></dt>
+        <dd v-if="room.safe">Possui</dd>
+        <dd v-else>Não possui</dd>
 
-          <dt><strong>Cofre</strong></dt>
-          <dd v-if="room.safe">Possui</dd>
-          <dd v-else>Não possui</dd>
-
-          <dt><strong>Accessibilidade para PCD's</strong></dt>
-          <dd v-if="room.accessible">Possui</dd>
-          <dd v-else>Não possui</dd>
-
-          <p>
-            <a :href="`/rooms/${room.id}`">Detalhes</a>
-          </p>
-
-          <hr>
-        </dl>
+        <dt><strong>Accessibilidade para PCD's</strong></dt>
+        <dd v-if="room.accessible">Possui</dd>
+        <dd v-else>Não possui</dd>
+      </dl>
   </section>
 </article>
 
