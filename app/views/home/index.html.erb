@@ -3,6 +3,11 @@
   <p>Aqui você encontra as melhores pousadas!</p>
 
   <div id="app">
+    <form @submit.prevent="searchGuesthouses">
+      <label for="search">Busca de Pousadas</label>
+      <input name="search" v-model="searchQuery" type="text" placeholder="Nome da Pousada">
+      <button type="submit">Search</button>
+    </form>
     <dl v-for="guesthouse in guesthouses">
       <dt><h4><a :href="'guesthouses/' + guesthouse.id">{{ guesthouse.brand_name }}</a></h4></dt>
       <dd>{{ guesthouse.address.city }} - {{ guesthouse.address.state }}</dd>
@@ -19,13 +24,19 @@
   createApp({
     data() {
       return {
-        guesthouses: []
+        guesthouses: [],
+        searchQuery: ''
+      }
+    },
+    methods: {
+      searchGuesthouses() {
+        fetch(`http://localhost:4000/api/v1/guesthouses?search=${this.searchQuery}`)
+          .then(response => response.json())
+          .then(data => this.guesthouses = data);
       }
     },
     mounted() {
-      fetch('http://localhost:4000/api/v1/guesthouses')
-        .then(response => response.json())
-        .then(data => this.guesthouses = data);
+      this.searchGuesthouses();
     }
   }).mount('#app')
 </script>
