@@ -1,0 +1,56 @@
+<article id="guesthouse-details">
+  <h3>Detalhes da {{ guesthouse.brand_name }}</h3>
+  <dl>
+    <dt>Descrição</dt>
+    <dd>{{ guesthouse.description }}</dd>
+    <dt>Endereço</dt>
+    <dd>
+      {{ address.street }},
+      {{ address.neighborhood }} -
+      {{ address.city }}/{{ address.state }} -
+      CEP: {{ address.postal_code }}
+    </dd>
+    <dt>Telefone</dt>
+    <dd>{{ guesthouse.phone_number }}</dd>
+    <dt>Email</dt>
+    <dd>{{ guesthouse.email }}</dd>
+    <dt>Aceita Pets</dt>
+    <dd v-if="guesthouse.pets">Aceita</dd>
+    <dd v-else>Não aceita</dd>
+    <dt>Política de Uso</dt>
+    <dd>{{ guesthouse.use_policy }}</dd>
+    <dt>Hora de Checkin</dt>
+    <dd>{{ guesthouse.checkin_hour }}</dd>
+    <dt>Hora de Checkout</dt>
+    <dd>{{ guesthouse.checkout_hour }}</dd>
+    <dt>Formas de Pagamento</dt>
+    <dd v-for="payment_method in payment_methods">
+      {{ payment_method.method }}
+    </dd>
+    <dt v-if="guesthouse.average_rating">Avaliação</dt>
+    <dd v-if="guesthouse.average_rating">{{ guesthouse.average_rating }}</dd>
+  </dl>
+</article>
+
+<script>
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                guesthouse: {},
+                address: {},
+                payment_methods: []
+            }
+        },
+        mounted() {
+            fetch('http://localhost:4000/api/v1/guesthouses/' + <%= @id %>)
+                .then(response => response.json())
+                .then(data => {
+                    this.guesthouse = data
+                    this.address = data.address
+                    this.payment_methods = data.payment_methods
+                });
+        }
+    }).mount('#guesthouse-details')
+</script>

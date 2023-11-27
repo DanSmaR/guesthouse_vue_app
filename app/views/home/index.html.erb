@@ -4,7 +4,7 @@
 
   <div id="app">
     <dl v-for="guesthouse in guesthouses">
-      <dt><h4><a :href="'guesthouse/' + guesthouse.id">{{ guesthouse.brand_name }}</a></h4></dt>
+      <dt><h4><a :href="'guesthouses/' + guesthouse.id">{{ guesthouse.brand_name }}</a></h4></dt>
       <dd>{{ guesthouse.address.city }} - {{ guesthouse.address.state }}</dd>
 
       <dt v-if="guesthouse.average_rating != null"><strong>Avaliação</strong></dt>
